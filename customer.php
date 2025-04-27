@@ -61,141 +61,93 @@ $wishlistItems = $wishlistStmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <title>Customer Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 20px;
-        }
-
-        h2, h3, h4 {
-            color: #2c3e50;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .section {
-            background-color: #ffffff;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        form {
-            margin-bottom: 15px;
-        }
-
-        form input[type="number"] {
-            width: 60px;
-            padding: 5px;
-            margin-right: 10px;
-        }
-
-        form button {
-            padding: 6px 12px;
-            margin-right: 5px;
-            border: none;
-            background-color: #3498db;
-            color: #fff;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        form button:hover {
-            background-color: #2980b9;
-        }
-
-        ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        li {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        li:last-child {
-            border-bottom: none;
-        }
-
-        li a {
-            color: #e74c3c;
-            text-decoration: none;
-            margin-left: 10px;
-        }
-
-        li a:hover {
-            text-decoration: underline;
-        }
-
-        .total-price {
-            font-weight: bold;
-            font-size: 18px;
-        }
-    </style>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
-<body>
-    <h2>Welcome, <?php echo $customerName; ?>!</h2>
+<body class="bg-light">
 
-    <h3>Select Products</h3>
-    <?php foreach ($categories as $category): ?>
-        <h4><?php echo $category['C_name']; ?></h4>
-        <?php
-        $productStmt = $pdo->prepare("SELECT * FROM product WHERE C_id = ?");
-        $productStmt->execute([$category['C_id']]);
-        $products = $productStmt->fetchAll();
-        foreach ($products as $product):
-        ?>
-            <form method="POST">
-                <h5><?php echo $product['P_name']; ?> - $<?php echo $product['price']; ?></h5>
-                <input type="hidden" name="product_id" value="<?php echo $product['P_id']; ?>">
-                <input type="number" name="quantity" min="1" value="1" required>
-                <button type="submit" name="add_to_cart">Add to Cart</button>
-                <button type="submit" name="add_to_wishlist">Add to Wishlist</button>
-            </form>
+<div class="container py-5">
+    <h2 class="text-center mb-4">Welcome, <?php echo htmlspecialchars($customerName); ?>!</h2>
+
+    <div class="mb-5">
+        <h3>Select Products</h3>
+        <?php foreach ($categories as $category): ?>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h4 class="mb-0"><?php echo htmlspecialchars($category['C_name']); ?></h4>
+                </div>
+                <div class="card-body">
+                    <?php
+                    $productStmt = $pdo->prepare("SELECT * FROM product WHERE C_id = ?");
+                    $productStmt->execute([$category['C_id']]);
+                    $products = $productStmt->fetchAll();
+                    foreach ($products as $product):
+                    ?>
+                        <form method="POST" class="mb-3">
+                            <div class="row align-items-center">
+                                <div class="col-md-5">
+                                    <h5><?php echo htmlspecialchars($product['P_name']); ?> - $<?php echo $product['price']; ?></h5>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="hidden" name="product_id" value="<?php echo $product['P_id']; ?>">
+                                    <input type="number" name="quantity" min="1" value="1" class="form-control" required>
+                                </div>
+                                <div class="col-md-5">
+                                    <button type="submit" name="add_to_cart" class="btn btn-primary me-2">Add to Cart</button>
+                                    <button type="submit" name="add_to_wishlist" class="btn btn-outline-danger">Add to Wishlist</button>
+                                </div>
+                            </div>
+                        </form>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         <?php endforeach; ?>
-    <?php endforeach; ?>
+    </div>
 
-    <h3>Your Shopping Cart</h3>
-    <ul>
-        <?php
-        $totalPrice = 0;
-        foreach ($cartItems as $item):
-            $productStmt = $pdo->prepare("SELECT P_name FROM product WHERE P_id = ?");
-            $productStmt->execute([$item['product_id']]);
-            $product = $productStmt->fetch();
-
-            $itemTotal = $item['price'] * $item['quantity'];
-            $totalPrice += $itemTotal;
-        ?>
-            <li>
-                <?php echo $product['P_name']; ?> - Quantity: <?php echo $item['quantity']; ?> - Price: $<?php echo $item['price']; ?> - Total: $<?php echo $itemTotal; ?>
-                <a href="remove_from_cart.php?id=<?php echo $item['id']; ?>">Remove</a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-    <p><strong>Total: $<?php echo $totalPrice; ?></strong></p>
-
-    <h3>Your Wishlist</h3>
-    <ul>
-        <?php foreach ($wishlistItems as $item): ?>
+    <div class="mb-5">
+        <h3>Your Shopping Cart</h3>
+        <ul class="list-group mb-3">
             <?php
-            $productStmt = $pdo->prepare("SELECT P_name FROM product WHERE P_id = ?");
-            $productStmt->execute([$item['product_id']]);
-            $product = $productStmt->fetch();
+            $totalPrice = 0;
+            foreach ($cartItems as $item):
+                $productStmt = $pdo->prepare("SELECT P_name FROM product WHERE P_id = ?");
+                $productStmt->execute([$item['product_id']]);
+                $product = $productStmt->fetch();
+
+                $itemTotal = $item['price'] * $item['quantity'];
+                $totalPrice += $itemTotal;
             ?>
-            <li>
-                <?php echo $product['P_name']; ?> - Quantity: <?php echo $item['quantity']; ?> - Price: $<?php echo $item['price']; ?>
-                <a href="move_to_cart.php?id=<?php echo $item['id']; ?>">Move to Cart</a> |
-                <a href="remove_from_wishlist.php?id=<?php echo $item['id']; ?>">Remove</a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <?php echo htmlspecialchars($product['P_name']); ?> - Qty: <?php echo $item['quantity']; ?> - Price: $<?php echo $item['price']; ?> - Total: $<?php echo $itemTotal; ?>
+                    <a href="remove_from_cart.php?id=<?php echo $item['id']; ?>" class="btn btn-sm btn-danger">Remove</a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+        <p class="fw-bold">Total: $<?php echo $totalPrice; ?></p>
+    </div>
+
+    <div>
+        <h3>Your Wishlist</h3>
+        <ul class="list-group">
+            <?php foreach ($wishlistItems as $item): ?>
+                <?php
+                $productStmt = $pdo->prepare("SELECT P_name FROM product WHERE P_id = ?");
+                $productStmt->execute([$item['product_id']]);
+                $product = $productStmt->fetch();
+                ?>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <?php echo htmlspecialchars($product['P_name']); ?> - Qty: <?php echo $item['quantity']; ?> - Price: $<?php echo $item['price']; ?>
+                    <div>
+                        <a href="move_to_cart.php?id=<?php echo $item['id']; ?>" class="btn btn-sm btn-success me-2">Move to Cart</a>
+                        <a href="remove_from_wishlist.php?id=<?php echo $item['id']; ?>" class="btn btn-sm btn-danger">Remove</a>
+                    </div>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</div>
+
+<!-- Bootstrap Bundle JS -->
+<script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,16 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Management</title>
+    <!-- Link to Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
-<body>
-    <h1>Product Management</h1>
-    <ul>
-        <li><a href="add_category.html">Add Category</a></li>
-        <li><a href="add_product.php">Add Product</a></li>
-        <li><a href="list.php">View Lists</a></li>
-        
+<body class="bg-light">
+
+<div class="container py-5">
+    <h1 class="text-center mb-4">Product Management</h1>
+    
+    <ul class="list-group">
+        <li class="list-group-item">
+            <a href="add_category.html" class="btn btn-link">Add Category</a>
+        </li>
+        <li class="list-group-item">
+            <a href="add_product.php" class="btn btn-link">Add Product</a>
+        </li>
+        <li class="list-group-item">
+            <a href="list.php" class="btn btn-link">View Lists</a>
+        </li>
     </ul>
-    <a href="index.html">Return</a>
+
+    <div class="mt-4 text-center">
+        <a href="index.html" class="btn btn-secondary">Return</a>
+    </div>
+</div>
+
+<!-- Link to Bootstrap JS -->
+<script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

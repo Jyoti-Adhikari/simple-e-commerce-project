@@ -1,14 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Category</title>
+    <!-- Link to Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
-<body>
-    <h1>Add Category</h1>
-    <form action="add_category.php" method="POST">
-        <label for="category_name">Category Name:</label>
-        <input type="text" id="category_name" name="category_name" required>
-        <button type="submit">Add</button>
-    </form>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Add Category</h1>
+        <form action="add_category.php" method="POST">
+            <div class="mb-3">
+                <label for="category_name" class="form-label">Category Name:</label>
+                <input type="text" id="category_name" name="category_name" class="form-control" required>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Add</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Link to Bootstrap JS and Bundle -->
+    <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
